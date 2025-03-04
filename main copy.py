@@ -2,24 +2,22 @@ import streamlit as st
 import pandas as pd
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+from openai import OpenAI
 
 st.set_page_config(page_title="Unit Converter", layout="wide")
 st.title("🔄 Unit Converter")
 
 # Load environment variables
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def get_conversion(value, from_unit, to_unit, category):
-    prompt = f"Convert {value} {from_unit} to {to_unit}. Return only the numeric value and unit, nothing else."
-    model = genai.GenerativeModel("gemini-2.0-flash")
-    response = model.generate_content(prompt)
-    
-    # Extracting only the number and unit
-    result = response.text.strip().split("\n")[0]  # Taking the first line in case of multiple lines
-    
-    return result  # Returning only the essential part
+    prompt = f"Convert {value} {from_unit} to {to_unit} in {category}. Use Google's unit conversion method."
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message['content']
 
 unit_categories = [
     "Area", "Data Transfer Rate", "Digital Storage", "Energy", 
@@ -53,9 +51,9 @@ with col1:
     from_unit = st.selectbox("From:", unit_options[selected_category])
     
 with col2:
+    converted = st.number_input("Converted number")
     to_unit = st.selectbox("To:", unit_options[selected_category])
-    converted_placeholder = st.empty()
 
 if st.button("Convert"):
     result = get_conversion(convert, from_unit, to_unit, selected_category)
-    converted_placeholder.text_input("Converted number", value=result)
+    st.write(f"Converted Value: {result}")
