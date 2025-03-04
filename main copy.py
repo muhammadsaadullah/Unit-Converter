@@ -1,23 +1,31 @@
 import streamlit as st
 import pandas as pd
 import os
+import logging
 from dotenv import load_dotenv
-from openai import OpenAI
+import google.generativeai as genai
+
+# Configure logging
+logging.basicConfig(filename="unit_converter.log", level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 
 st.set_page_config(page_title="Unit Converter", layout="wide")
 st.title("🔄 Unit Converter")
 
 # Load environment variables
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def get_conversion(value, from_unit, to_unit, category):
-    prompt = f"Convert {value} {from_unit} to {to_unit} in {category}. Use Google's unit conversion method."
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo", 
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response.choices[0].message['content']
+    prompt = f"Convert {value} {from_unit} to {to_unit}. Return only the numeric value and unit, nothing else."
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    response = model.generate_content(prompt)
+    
+    # Extracting only the number and unit
+    result = response.text.strip().split("\n")[0]  # Taking the first line in case of multiple lines
+    
+    logging.info(f"Conversion Request: {value} {from_unit} to {to_unit} | Result: {result}")
+    return result  # Returning only the essential part
 
 unit_categories = [
     "Area", "Data Transfer Rate", "Digital Storage", "Energy", 
@@ -46,14 +54,18 @@ selected_category = st.selectbox("Select a unit category:", unit_categories)
 
 col1, col2 = st.columns(2)
 
+if "converted_value" not in st.session_state:
+    st.session_state["converted_value"] = ""
+
 with col1:
-    convert = st.number_input("Insert a number")
+    convert = st.number_input("Insert a number", key="input_number")
     from_unit = st.selectbox("From:", unit_options[selected_category])
-    
+
 with col2:
-    converted = st.number_input("Converted number")
+    converted_box = st.text_input("Converted number", value=st.session_state["converted_value"], key="converted_box")
     to_unit = st.selectbox("To:", unit_options[selected_category])
 
 if st.button("Convert"):
     result = get_conversion(convert, from_unit, to_unit, selected_category)
-    st.write(f"Converted Value: {result}")
+    st.session_state["converted_value"] = result  # Update session state
+    st.rerun()  # Force Streamlit to refresh and update the UI
