@@ -1,8 +1,13 @@
 import streamlit as st
 import pandas as pd
 import os
+import logging
 from dotenv import load_dotenv
 import google.generativeai as genai
+
+# Configure logging
+logging.basicConfig(filename="unit_converter.log", level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 
 st.set_page_config(page_title="Unit Converter", layout="wide")
 st.title("🔄 Unit Converter")
@@ -19,6 +24,7 @@ def get_conversion(value, from_unit, to_unit, category):
     # Extracting only the number and unit
     result = response.text.strip().split("\n")[0]  # Taking the first line in case of multiple lines
     
+    logging.info(f"Conversion Request: {value} {from_unit} to {to_unit} | Result: {result}")
     return result  # Returning only the essential part
 
 unit_categories = [
@@ -48,14 +54,18 @@ selected_category = st.selectbox("Select a unit category:", unit_categories)
 
 col1, col2 = st.columns(2)
 
+if "converted_value" not in st.session_state:
+    st.session_state["converted_value"] = ""
+
 with col1:
-    convert = st.number_input("Insert a number")
+    convert = st.number_input("Insert a number", key="input_number")
     from_unit = st.selectbox("From:", unit_options[selected_category])
-    
+
 with col2:
+    converted_box = st.text_input("Converted number", value=st.session_state["converted_value"], key="converted_box")
     to_unit = st.selectbox("To:", unit_options[selected_category])
-    converted_placeholder = st.empty()
 
 if st.button("Convert"):
     result = get_conversion(convert, from_unit, to_unit, selected_category)
-    converted_placeholder.text_input("Converted number", value=result)
+    st.session_state["converted_value"] = result  # Update session state
+    st.rerun()  # Force Streamlit to refresh and update the UI
