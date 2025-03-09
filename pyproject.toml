@@ -1,3 +1,6 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
 [project]
 name = "project-02-unit-converter"
 version = "0.1.0"
@@ -11,5 +14,3 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "pint>=0.24.4",
 ]
-[tool.pdm.dependencies]
-python-dotenv = "^1.0.0"
