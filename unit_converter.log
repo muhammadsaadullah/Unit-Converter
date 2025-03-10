@@ -2,3 +2,14 @@
 2025-03-04 12:03:11,165 - INFO - Conversion Request: 32892938.0 Square meter to Square micrometer | Result: 3.2892938e+20 Square micrometer
 2025-03-04 12:04:59,716 - INFO - Conversion Request: 238797.0 Square meter to Hectare | Result: 23.8797 Hectare
 2025-03-04 12:05:26,458 - INFO - Conversion Request: 0.03241231 Square meter to Square micrometer | Result: 32412310 Square micrometer
+2025-03-04 13:59:31,455 - INFO - Conversion Request: 5.0 Square meter to Square meter | Result: 5.0 Square meter
+2025-03-04 13:59:33,865 - INFO - Conversion Request: 5.0 Square kilometer to Square meter | Result: 5000000 Square meter
+2025-03-04 14:00:45,929 - INFO - Conversion Request: 66.0 Acre to Square meter | Result: 266902.77 square meter
+2025-03-04 14:00:46,588 - INFO - Conversion Request: 5.0 Acre to Square meter | Result: 20234.28 m^2
+2025-03-04 14:00:46,739 - INFO - Conversion Request: 66.0 Acre to Square meter | Result: 266,902.76 square meter
+2025-03-04 14:00:51,379 - INFO - Conversion Request: 5.0 Acre to Square meter | Result: 20234.28 m^2
+2025-03-04 15:50:21,140 - ERROR - Pine conversion error: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance.
+2025-03-04 16:18:36,473 - ERROR - Pine conversion error: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance.
+2025-03-04 16:18:39,368 - ERROR - Pine conversion error: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.html for guidance.
+2025-03-04 16:18:45,023 - INFO - Gemini Conversion: 96979.0 celsius to celsius | Result: 96979.0 °C
+2025-03-04 16:18:57,744 - INFO - Gemini Conversion: 96979.0 pascal to pascal | Result: 96979.0 pascal
